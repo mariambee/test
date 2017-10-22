@@ -1,0 +1,35 @@
+0.  BMP supports 32 bit color, so over 4 billion colors. 
+    GIF suports 8 bit color, so 256 colors.
+    JPEG supports 24 bit color, so over 16 million colors.
+    PNG supports 24 bit collor, so over 16 million colors. 
+1.  GIF supports animation. 
+2.  Lossy compression reduces a file by permanently eliminating certain
+    information, such as redudant information (all orginial data cannot be
+    recovered when the file is uncompressed). In lossless compression, every
+    bit of information within a file when it was compressed can be recovered 
+    when it is uncompressed. 
+3.  JPEG is lossy compressed.
+4.  When a file is delted, its address is forgotten, but the image itself 
+    remains on the hard drive. 
+5.  To ensures a fie canot be retrieved, use a program that overides the 
+    information of where the file was previosuly stored. 
+6.  It is a header file that declares that declares integer types of specific 
+    size.
+7.  Using those specific integer types allows the programmer to specify how he
+    she intends to use a variable; with an unisgned int, it relays that negative
+    values are not needed, and the numeric value in the type declares of what 
+    size the variable will be. 
+8.  1, 4, 4, 2 respectviely.
+9.  They must be set to the signature 0x4d42.
+10. bfSize specifies the size of the bitmap file (in bytes)
+	biSize specifies the size of the structure (in bytes)
+11. If biHeight is positive, the bitmap is bottom-up and if it is negative, the
+    bitmap is a top-down.
+12. biBitCount 
+13. fopen will return NULL if it cannot creat the otufile to write to; perhaps 
+    there was not enough disk space for example. 
+14. Becuase we want fread to move over the file one by one with a specific length
+15. It assigns 3 to padding to make the scanline a multiple of 4. 
+16. It moves the file pointer over by an amount desired. 
+17. It sets fseek to begin from the current relative position of the file pointer.
+18. Rickroll

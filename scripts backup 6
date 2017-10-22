@@ -1,0 +1,238 @@
+/**
+ * scripts.js
+ *
+ * Computer Science 50
+ * CS50 Project
+ *
+ * Global JavaScript.
+ */
+ 
+ 
+/** Global Variables */
+ 
+// where translated google text should go
+var g_where;
+ 
+// where translated microsoft text shuuld go
+var m_where;
+ 
+// google's response
+var g_response;
+
+// microsoft's repsonse
+var m_response;
+
+// for accuracy page
+var method;
+var a_from;
+var a_to;
+
+
+
+
+
+var g_loop;
+var language_codes = ["en", "ar", "bg", "ca", "hr", "cs", "da", "nl", "et", "fi", "fr", 
+  "de", "el", "ht", "id", "it", "ko", "lv", "lt", "ms", "mt", "no", "fa", "pl", 
+  "pt", "ro", "ru", "sl", "sl", "es", "th", "tr", "uk", "ur", "vi"];
+var index = 1;
+
+
+
+
+/** CS50 Translate */
+
+// error checking and calling translators
+function translators () {
+  
+  var text_input = $("#sourceText").val();
+  var from_lang = $("#trans_from").val();
+  var to_lang = $("#trans_to").val();
+  
+  if (text_input == "")
+  {
+    alert("Please provide text to translate.");
+  }
+  else if (from_lang == "0")
+  {
+    alert("Please proved a language from which to translate.");
+  }
+  else if (to_lang == "0")
+  {
+    alert("Please provide a languge to which to translate.");
+  }
+  else if (from_lang == to_lang)
+  {
+    alert("Choose different languages.");
+  }
+  else
+  {
+    method = 0;
+    g_where = $("#google_translatedText");
+    GoogleTranslate(text_input, from_lang, to_lang);
+    
+    m_where = $("#microsoft_translatedText");
+    MicrosoftTranslate(text_input, from_lang, to_lang);
+  }
+}
+
+
+
+/** Translate All (Accuracy) */
+
+function translate_all () {
+  
+  g_where = $("#g_div");
+  g_where.empty();
+  m_where =$("#m_div");
+  m_where.empty();
+  var a_text = $("#accuracy_text").val();
+  a_from = $("#a_from").val();
+  a_to = $("#a_to").val();
+  
+  if (a_text == "")
+  {
+    alert("Please provide text to translate.");
+  }
+  else if (a_from == "0")
+  {
+    alert("Please proved a language from which to translate.");
+  }
+  else if (a_to == "0")
+  {
+    alert("Please provide a languge to which to translate.");
+  }
+  else if (a_from == a_to)
+  {
+    alert("Choose different languages.");
+  }
+  else
+  {
+    g_where.append("<img alt='Google Logo' src='/img/google_g_medium.png'/><br>");
+    var newdiv = "<div id= 'div" + index + "'><div>";
+    g_where.append(newdiv);
+    g_where = $("#div1");
+    a_text = $("#accuracy_text").val();
+    a_from = $("#a_from").val();
+    a_to = $("#a_to").val();
+    method = 2;
+    GoogleTranslate(a_text, a_from, a_to);
+    m_where.append("<img alt='Microsoft Logo' src='/img/microsoft_logo_medium.png'/><br>");
+    m_where.append("Try different combinations to see how well the translators work!");
+  }
+}
+
+
+
+
+
+/** Google Scripts */
+
+// ajax method
+function GoogleTranslate (text, from, to, where, todo) {
+  // todo stands for whether to add to "where" (1) or replace it (0)
+  var g_object = new Object;
+  g_object.key = "AIzaSyAIGq707ZX2jE6uSNhL4XbzJJOKjO__1qo";
+  g_object.source = from;
+  g_object.target = to;
+  g_object.q = text;
+  console.log("1");
+  $.ajax({
+    //async: false,
+    type: "POST",
+    url: "https://www.googleapis.com/language/translate/v2",
+    data: g_object,
+    dataType: 'jsonp',
+    success: function (response) {
+      g_response = response.data.translations[0].translatedText;
+      if (method == 0)
+      {
+        g_where.val(g_response);
+        console.log("0");
+      }
+      if (method == 1)
+      {
+        g_where.append(" - and back - <strong>" + g_response + "</strong><br>");
+        var newdiv = "<div id= 'div" + (index+1) + "'></div>";
+        g_where = $("#g_div");
+        g_where.append(newdiv);
+        // g_where = $("#div2");
+        // g_where.append("Try different combinations to see how well the translators work!");
+      }
+      if (method == 2)
+      {
+        g_where.append("<strong>" + g_response + "</strong>");
+        method = 1;
+        GoogleTranslate(g_response, a_to, a_from);
+        console.log("2");
+      }
+    },
+    error: function (response) {
+      alert('Error:' + response.error.message);
+    }
+  });
+  }
+
+
+
+
+/** Microsoft Scripts */
+
+// crreat global variale to store current token
+var global_token = '';
+
+// renew token
+function pageLoaded() {
+  // obtain access token (usuable for 10 minutes)
+  getToken();
+  
+  // get a token every 9 minutes just to be sure
+  setInterval(getToken, 9 * 60 * 1000);
+}
+
+
+//get token
+function getToken() {
+  var requeststr = "./token.php";
+  $.ajax({
+    type: "POST",
+    url: requeststr,
+    cache: true,
+    dataType: 'json',
+    success: function (data) {
+      global_token = data.access_token;
+    }
+  });
+}
+
+
+// microsoft translate
+function MicrosoftTranslate(text, from, to, where) {
+  
+  var m_object = new Object;
+  m_object.text = text;
+  m_object.from = from;
+  m_object.to = to;
+  m_object.oncomplete = "microsoft_translation";
+  m_object.appId = "Bearer " + global_token;
+  var requestStr = "https://api.microsofttranslator.com/V2/Ajax.svc/Translate";
+  console.log("m");
+  $.ajax({
+    
+    type: "GET",
+    url: requestStr,
+    data: m_object,
+    dataType: 'jsonp',
+    cache: true,
+  });
+}
+
+
+// update textbox
+function microsoft_translation(response) {
+  // display translated text in textare 
+  m_response = response;
+  m_where.val(m_response);
+}        
+
+

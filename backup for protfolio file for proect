@@ -1,0 +1,165 @@
+<!-- create table -->
+<table class="table table-striped" style="width:100%; text-align: left"> 
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Shares</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    <!-- create row for each stock -->
+    <?php foreach($positions as $position): ?>
+        </tr>
+        <tr>
+            <td><?= $position["symbol"] ?></td>
+            <td><?= $position["name"] ?></td>
+            <td><?= $position["shares"] ?></td>
+            <td>$<?= number_format($position["price"], 2) ?></td>
+            <td>$<?= number_format($position["Total"], 2) ?></td>
+        </tr>
+    <?php endforeach ?>
+    <!-- place cash -->
+    <tr>
+        <td>CASH</td>
+        <td></td><td></td><td></td>
+        <td>$<?=number_format($users[0]["cash"], 2)?></td>
+    </tr>
+    </tbody> 
+</table>
+
+
+<form onsubmit="GoogleTranslate (this.query.value, this.trans_from); return false"> 
+    Translate this: <input name="query" id="query" type="text" size="50" placeholder= "50 char only pls" />
+    <div><label>Translate From:</label><select id="trans_from"><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="en">English</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option></select></div>
+    <div><label>First Language:</label><select id="trans_to_1"><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="en">English</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option></select></div>
+    <div><label>Second Language:</label><select id="trans_to_2"><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="en">English</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option></select></div>
+    <div><label>Third Language:</label><select id="trans_to_2"><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="en">English</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option></select></div>
+    <input type="submit" value="Translate"/> 
+</form> 
+<div>
+    After first translation:
+    <div id="first_translation"></div>
+    After second translation:
+    <div id="second_translation"></div>
+    After third translation:
+    <div id="third_translation"></div>
+    Back to the begining:
+    <div id="final_return_text"</div>
+</div>
+
+
+<script>
+    function translateText(response) {
+        document.getElementById("first_translation").innerHTML = "<br>" + response.data.translations[0].translatedText;
+        alert("working");
+    }
+</script>
+
+<script>
+    function GoogleTranslate () {
+        var newScript = document.createElement('script');
+        var sourceText = escape(document.getElementById("query").value);
+        var sourceLang = document.getElementById("trans_from").value;
+        var targetLang1 = document.getElementById("trans_to_1").value;
+        newScript.type = 'text/javascript';
+        var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyAIGq707ZX2jE6uSNhL4XbzJJOKjO__1qo&source=' + sourceLang + '&target=' + targetLang1 + '&callback=translateText&q=' + sourceText;
+        newScript.src = source;
+        
+        // When we add this script to the head, the request is sent off.
+        document.getElementsByTagName('head')[0].appendChild(newScript); }
+</script>
+
+    
+    
+    
+
+
+<script>
+// crreat global variale to store current token
+var global_token = '';
+
+function pageloaded() {
+  // obtain access token (usuable for 10 minutes)
+  getToken();
+  // get a token every 9 minutes just to be sure
+  setInterval(getToken, 9 * 60 * 1000);
+}
+
+//get token
+function getToken() {
+  var requeststr = "./token.php";
+
+  $.ajax({
+    url: requeststr,
+    type: "POST",
+    cache: true,
+    dataType: 'json',
+    success: function (data) {
+      global_token = data.access_token;
+    }
+  });
+}
+
+function translate(text, from, to) {
+  var p = new Object;
+  p.text = text;
+  p.from = from;
+  p.to = to;
+
+  // A major puzzle solved.  Who would have guessed you specify the jsonp callback in oncomplete?
+  p.oncomplete = 'ajaxTranslateCallback';
+  
+ // Another major puzzle.  The authentication is supplied in the deprecated appId param.
+  p.appId = "Bearer " + global_token;
+
+  var requestStr = "https://api.microsofttranslator.com/V2/Ajax.svc/Translate";
+
+  $.ajax({
+    url: requestStr,
+    type: "POST",
+    data: p,
+    dataType: 'jsonp',
+    cache: true
+  });
+}
+
+function ajaxTranslateCallback(response) {
+  // Display translated text in the right textarea.
+  $("#target").text(response);
+}
+
+function translateSourceTarget() {
+  // Translate the text typed by the user into the left textarea.
+  var src = $("#source").val();
+  translate(src, "en", "fr");
+}
+</script>
+
+
+
+
+<body onload="pageloaded();">
+
+<textarea id="source">Type text to translate!</textarea>
+<button id="translateButton" class= "button" onclick="translateSourceTarget();">Translate</button>
+<textarea id="target"></textarea>
+
+<section>
+  <h2>Section Title</h2>
+  <ul class="input-list style-1 clearfix">
+    <li>
+      <input type="text" placeholder=":input">
+    </li>
+    <li>
+      <input type="text" placeholder=":focus" class="focus">
+    </li>
+  </ul>
+</section>
+
+
+<textarea placeholder="Typet text to translate!" rows="20" 
+id="text" cols="40" class="textarea" 
+role="textbox"></textarea>

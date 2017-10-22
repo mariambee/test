@@ -1,0 +1,28 @@
+0.  the maximum word length
+1.  Returna resource usage statistics for the calling process
+2.  16 data types
+3.  because "calculate" expects pointers
+4.  Main checks for correct command line arguments, sets the time for functions
+    at zero initially, checks if the dictionary is loaded, checks if it can open
+    the text, and then initializes counters for index, misspeillings, and words
+    prior to entering the "for" loop. THe "for" loop then checks if the character
+    read is an alpha or apostrophe, and if so, then it is stored in the index 
+    of the array WORD. (This basically builds the word.) If a whole word is 
+    found, then the for loop checks if it
+    is spelled correctly. Ultimately the end of the code obtains and prints the
+    statistics.
+5.  becuase fgetc is more precise at getting one character at a time
+6.  the constant type makes sure that the values are set at zero for each word
+    and this cannot change
+7.  The data structure I used was a hashtable, an array of pointers to structs, 
+    which are a data type of a char and a pointer to another struct. 
+8.  30 seconds total on austinpowers
+9.  I made the size function faster by incorporating a global variabel to be
+    implemented in load. I also chaged my unload function to skip over empty
+    buckets in the hashtable automaticcaly instead of checking to see if they
+    were NULL. Finally, I played around with the size of my hashtable to    
+    optimize my code. 
+10. A bottleneck for my code was the check function. WHen checking it with one
+    dictionary it is pretty fast, but on the Big Board it is the slowest part. 
+    I think to optimize it I might use my own form of strcasecmp to see if that
+    would make my code any faster. 

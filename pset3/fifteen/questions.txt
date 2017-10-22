@@ -1,0 +1,9 @@
+questions.txt
+
+Computer Science 50
+Problem Set 3
+
+0. THe framework allows for a minum of a 3x3 to a 9x9.
+1. The game's data sturcture is represented by a 2d aray.
+2. The function greet is called to greet the player at start. 
+3. I need to implement init, draw, move, and won. 

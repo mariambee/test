@@ -1,0 +1,18 @@
+chmod 711 <file>
+rwx -> 111 -> 7
+--x -> 001 -> 1
+--x-> 001 -> 1
+
+What if we want give read access to the file?
+we need:
+rwx -> 111 -> 7
+r-- -> 100 -> 4
+r---> 100 -> 4
+So we would need to execute: chmod 744
+
+Equivalently we woud could run: (chmod a + (r, w, or x) <file>) to grant
+permission to that particular option
+
+chmod can be used for any directory 
+
+chmod 644 *.html (*.htm; means apply to any file of .html type)
